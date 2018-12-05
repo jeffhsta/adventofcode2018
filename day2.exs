@@ -6,6 +6,53 @@ defmodule Day2 do
     |> calculate_checksum()
   end
 
+  def find_similar_box_id([first_id | rest]) do
+    with [result | _] <- compare_ids(first_id, rest, []),
+         {first_id, second_id} <- result do
+      first_id_arr = first_id |> String.split("") |> Enum.filter(&(&1 != ""))
+      second_id_arr = second_id |> String.split("") |> Enum.filter(&(&1 != ""))
+
+      first_id_arr
+      |> Enum.zip(second_id_arr)
+      |> Enum.reduce("", fn cur, acc ->
+        with {a, a} <- cur do
+          acc <> a
+        else
+          _ -> acc
+        end
+      end)
+    else
+      _ -> []
+    end
+  end
+
+  defp compare_ids(_, [], similar_found), do: similar_found
+  defp compare_ids(current_id, arr = [next_id | rest], similar_found) do
+    similar = Enum.reduce(arr, [], fn item, list ->
+      with {true, first_id, second_id} <- is_similar(current_id, item) do
+        [{first_id, second_id} | list]
+      else
+        _ -> list
+      end
+    end)
+
+    compare_ids(next_id, rest, similar_found ++ similar)
+  end
+
+  defp is_similar(first_id, second_id) do
+    first_id_arr = first_id |> String.split("") |> Enum.filter(&(&1 != ""))
+    second_id_arr = second_id |> String.split("") |> Enum.filter(&(&1 != ""))
+
+    convergence_count =
+      first_id_arr
+      |> Enum.zip(second_id_arr)
+      |> Enum.filter(&(elem(&1, 0) == elem(&1, 1)))
+      |> Enum.count()
+
+    is_similar = convergence_count >= String.length(first_id) - 1
+    {is_similar, first_id, second_id}
+  end
+
   defp count_duplicates(box_id) do
     box_id
     |> String.split("")
@@ -298,4 +345,8 @@ input = [
 
 input
 |> Day2.checksum()
-|> IO.inspect(label: "Result")
+|> IO.inspect(label: "Day 2 Part 1")
+
+input
+|> Day2.find_similar_box_id()
+|> IO.inspect(label: "Day 2 Part 2")
