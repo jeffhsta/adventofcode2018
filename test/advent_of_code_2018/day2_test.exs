@@ -6,20 +6,28 @@ defmodule AdventOfCode2018.Day2Test do
   alias AdventOfCode2018.Day2
 
   describe "Day 2 Part 1" do
-    test "" do
-      :day2
-      |> load_input_from_file()
-      |> Day2.checksum()
-      |> IO.inspect(label: "Day 2 Part 1")
+    test "return the expected answer from the challenge input" do
+      expected = 7221
+
+      result =
+        :day2
+        |> load_input_from_file()
+        |> Day2.checksum()
+
+      assert expected == result
     end
   end
 
   describe "Day 2 Part 2" do
-    test "" do
-      :day2
-      |> load_input_from_file()
-      |> Day2.find_similar_box_id()
-      |> IO.inspect(label: "Day 2 Part 2")
+    test "return the expected answer from the challenge input" do
+      expected = "mkcdflathzwsvjxrevymbdpoq"
+
+      result =
+        :day2
+        |> load_input_from_file()
+        |> Day2.find_similar_box_id()
+
+      assert expected == result
     end
   end
 end
